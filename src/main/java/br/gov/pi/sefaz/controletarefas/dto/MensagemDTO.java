@@ -19,8 +19,8 @@ public class MensagemDTO {
 		this.mensagem = mensagem;
 		this.data = data;
 	}
-	public MensagemDTO(String message) {
-		super();
+	public MensagemDTO(String mensagem) {
+		this(mensagem,new Date());
 	}
 	public String getMensagem() {
 		return mensagem;

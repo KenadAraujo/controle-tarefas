@@ -26,7 +26,7 @@ public class Tarefa implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID",nullable = false)
-	private int id;
+	private Long id;
 	
 	@Column(name = "TITULO")
 	private String titulo;
@@ -46,10 +46,10 @@ public class Tarefa implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private StatusTarefa statusTarefa;
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getTitulo() {

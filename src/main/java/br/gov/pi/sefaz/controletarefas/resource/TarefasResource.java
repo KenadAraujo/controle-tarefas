@@ -1,22 +1,27 @@
 package br.gov.pi.sefaz.controletarefas.resource;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.pi.sefaz.controletarefas.config.exception.ExcecaoValidacao;
 import br.gov.pi.sefaz.controletarefas.dto.MensagemDTO;
 import br.gov.pi.sefaz.controletarefas.dto.TarefaDTO;
 import br.gov.pi.sefaz.controletarefas.models.Tarefa;
+import br.gov.pi.sefaz.controletarefas.models.constants.StatusTarefa;
 import br.gov.pi.sefaz.controletarefas.service.TarefaService;
 
 @RestController
@@ -44,5 +49,22 @@ public class TarefasResource {
 		mensagens.clear();
 		mensagens.add(new MensagemDTO("Cadastro com sucesso!"));
 		return ResponseEntity.ok(mensagens);
+	}
+	@GetMapping
+	public ResponseEntity<?> listar(@RequestParam(value = "status",required = false)String status,
+									@RequestParam(value = "dataInicial",required = false)
+										@DateTimeFormat(pattern = "dd/MM/yyyy")Date dataInicial,
+									@RequestParam(value = "tamanhoDaPagina",defaultValue = "10") int tamanhoDaPagina,
+									@RequestParam(value = "pagina",defaultValue = "0") int pagina){
+		StatusTarefa statusTarefa = null;
+		if(status!=null) {
+			statusTarefa = StatusTarefa.build(status);
+		}
+		Iterable<Tarefa> tarefas = tarefaService.listar(tamanhoDaPagina, pagina, statusTarefa, dataInicial);
+		List<TarefaDTO> tarefasDtos = new ArrayList<>();
+		tarefas.forEach(e->{
+			tarefasDtos.add(new TarefaDTO(e));
+		});
+		return ResponseEntity.ok(tarefasDtos);
 	}
 }

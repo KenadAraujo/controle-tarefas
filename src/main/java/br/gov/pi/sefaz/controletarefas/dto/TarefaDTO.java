@@ -29,6 +29,16 @@ public class TarefaDTO extends AbstractDTO<Tarefa>{
 	@NotEmpty(message = "O status da tarefa não pode ser vazio")
 	private String statusTarefa;
 
+	public TarefaDTO() {}
+
+	public TarefaDTO(Tarefa tarefa) {
+		this.titulo = tarefa.getTitulo();
+		this.descricao = tarefa.getDescricao();
+		this.dataCriacao = tarefa.getDataCriacao();
+		this.dataConclusao = tarefa.getDataConclusao();
+		this.statusTarefa = tarefa.getStatusTarefa().name().toString();
+	}
+	
 	public String getTitulo() {
 		return titulo;
 	}
