@@ -8,8 +8,10 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,6 +78,23 @@ public class TarefasResource {
 			return ResponseEntity.ok(tarefaDTO);			
 		}else {
 			return ResponseEntity.ok(new MensagemDTO("Não há dados para serem mostrados!"));
+		}
+	}
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deletarTarefa(@PathVariable(name = "id")long idTarefa){
+		List<MensagemDTO> mensagens = new ArrayList<>();
+		Tarefa tarefa = tarefaService.buscarPorId(idTarefa);
+		if(tarefa!=null) {
+			tarefaService.deletar(tarefa);
+		}else {
+			mensagens.add(new MensagemDTO("Tarefa não existe!"));
+		}
+		
+		if(mensagens.isEmpty()) {
+			mensagens.add(new MensagemDTO("Excluído com sucesso!"));
+			return ResponseEntity.ok(mensagens);
+		}else {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagens);
 		}
 	}
 }

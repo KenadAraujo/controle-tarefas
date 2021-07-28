@@ -3,6 +3,7 @@ package br.gov.pi.sefaz.controletarefas.models;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -82,6 +83,9 @@ public class Tarefa implements Serializable{
 	public void setStatusTarefa(StatusTarefa statusTarefa) {
 		this.statusTarefa = statusTarefa;
 	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(dataConclusao, dataCriacao, descricao, id, statusTarefa, titulo);
+	}
 
-	
 }
