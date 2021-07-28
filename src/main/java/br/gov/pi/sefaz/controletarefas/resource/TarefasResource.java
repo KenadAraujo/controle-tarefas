@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,5 +67,15 @@ public class TarefasResource {
 			tarefasDtos.add(new TarefaDTO(e));
 		});
 		return ResponseEntity.ok(tarefasDtos);
+	}
+	@GetMapping("/{id}")
+	public ResponseEntity<?> listarEspecifico(@PathVariable(name = "id") long idTarefa){
+		Tarefa tarefa = tarefaService.buscarPorId(idTarefa);
+		if(tarefa!=null) {
+			TarefaDTO tarefaDTO = new TarefaDTO(tarefa);
+			return ResponseEntity.ok(tarefaDTO);			
+		}else {
+			return ResponseEntity.ok(new MensagemDTO("Não há dados para serem mostrados!"));
+		}
 	}
 }

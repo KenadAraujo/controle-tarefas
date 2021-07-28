@@ -3,6 +3,7 @@ package br.gov.pi.sefaz.controletarefas.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -41,5 +42,9 @@ public class TarefaService {
 		
 		Iterable<Tarefa> tarefas = tarefaRepository.findAll(Example.of(tarefa),pag);
 		return tarefas;
+	}
+	public Tarefa buscarPorId(long id) {
+		Optional<Tarefa> tarefa = tarefaRepository.findById(id);
+		return tarefa.isPresent()?tarefa.get():null;
 	}
 }
