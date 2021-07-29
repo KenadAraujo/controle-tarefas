@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -95,6 +96,29 @@ public class TarefasResource {
 			return ResponseEntity.ok(mensagens);
 		}else {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagens);
+		}
+	}
+	@PutMapping("/{id}")
+	public ResponseEntity<?> alterarTarefa(@PathVariable(name = "id") long idTarefa,
+											@Valid @RequestBody TarefaDTO tarefaNova,BindingResult result){
+		
+		List<MensagemDTO> mensagens = new ArrayList<>();
+		if(result.hasErrors()) {
+			mensagens.addAll(MensagemDTO.construirErros(result));
+		}
+		try {
+			Tarefa tarefa =  tarefaNova.toModel();
+			tarefa.setId(idTarefa);
+			tarefaService.editar(tarefa);
+		} catch (ExcecaoValidacao e) {
+			mensagens.add(new MensagemDTO(e.getMessage()));
+		}
+		if(mensagens.isEmpty()) {
+			mensagens.clear();
+			mensagens.add(new MensagemDTO("Atualizado com sucesso!"));
+			return ResponseEntity.ok(mensagens);
+		}else {
+			return ResponseEntity.badRequest().body(mensagens);
 		}
 	}
 }
