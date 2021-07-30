@@ -3,6 +3,7 @@ package br.gov.pi.sefaz.controletarefas.models;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ public class Tarefa implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID",nullable = false)
-	private int id;
+	private Long id;
 	
 	@Column(name = "TITULO")
 	private String titulo;
@@ -46,10 +47,10 @@ public class Tarefa implements Serializable{
 	@Enumerated(EnumType.STRING)
 	private StatusTarefa statusTarefa;
 	
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getTitulo() {
@@ -82,6 +83,9 @@ public class Tarefa implements Serializable{
 	public void setStatusTarefa(StatusTarefa statusTarefa) {
 		this.statusTarefa = statusTarefa;
 	}
+	@Override
+	public int hashCode() {
+		return Objects.hash(dataConclusao, dataCriacao, descricao, id, statusTarefa, titulo);
+	}
 
-	
 }

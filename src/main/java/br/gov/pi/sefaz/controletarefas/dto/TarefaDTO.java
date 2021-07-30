@@ -12,6 +12,8 @@ import br.gov.pi.sefaz.controletarefas.models.constants.StatusTarefa;
 
 public class TarefaDTO extends AbstractDTO<Tarefa>{
 
+	private Long id;
+	
 	@NotNull(message = "O titulo precisa ser fornecido!")
 	@NotEmpty(message = "O titulo não pode ser vazio!")
 	private String titulo;
@@ -29,6 +31,17 @@ public class TarefaDTO extends AbstractDTO<Tarefa>{
 	@NotEmpty(message = "O status da tarefa não pode ser vazio")
 	private String statusTarefa;
 
+	public TarefaDTO() {}
+
+	public TarefaDTO(Tarefa tarefa) {
+		this.id = tarefa.getId();
+		this.titulo = tarefa.getTitulo();
+		this.descricao = tarefa.getDescricao();
+		this.dataCriacao = tarefa.getDataCriacao();
+		this.dataConclusao = tarefa.getDataConclusao();
+		this.statusTarefa = tarefa.getStatusTarefa().name().toString();
+	}
+	
 	public String getTitulo() {
 		return titulo;
 	}
@@ -67,6 +80,14 @@ public class TarefaDTO extends AbstractDTO<Tarefa>{
 
 	public void setStatusTarefa(String statusTarefa) {
 		this.statusTarefa = statusTarefa;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Override
