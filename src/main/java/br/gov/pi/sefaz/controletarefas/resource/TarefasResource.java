@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,14 +28,28 @@ import br.gov.pi.sefaz.controletarefas.dto.TarefaDTO;
 import br.gov.pi.sefaz.controletarefas.models.Tarefa;
 import br.gov.pi.sefaz.controletarefas.models.constants.StatusTarefa;
 import br.gov.pi.sefaz.controletarefas.service.TarefaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/tarefa")
+@Tag(name = "Recursos de Tarefas",description = "Todos os recursos relacionado a manipulação das tarefas")
 public class TarefasResource {
 
 	@Autowired
 	private TarefaService tarefaService;
 	
+	@Operation(summary = "Cadastrar tarefas",
+			responses = {
+				@ApiResponse(description = "Sucesso na operação",responseCode = "200",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class))),
+				@ApiResponse(description = "Ocorreu um erro na operação",responseCode = "400",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class)))
+			}
+	)
 	@PostMapping
 	public ResponseEntity<?> cadastrar(@Valid @RequestBody TarefaDTO tarefaNova,BindingResult result){
 		List<MensagemDTO> mensagens = new ArrayList<>();
@@ -54,6 +69,12 @@ public class TarefasResource {
 		mensagens.add(new MensagemDTO("Cadastro com sucesso!"));
 		return ResponseEntity.ok(mensagens);
 	}
+	
+	@Operation(summary = "Consulta tarefas",
+			responses = {
+				@ApiResponse(description = "Sucesso na operação",responseCode = "200",content = @Content(mediaType = "application/json",schema = @Schema(implementation = TarefaDTO.class))),
+			}
+	)
 	@GetMapping
 	public ResponseEntity<?> listar(@RequestParam(value = "status",required = false)String status,
 									@RequestParam(value = "dataInicial",required = false)
@@ -71,6 +92,13 @@ public class TarefasResource {
 		});
 		return ResponseEntity.ok(tarefasDtos);
 	}
+	
+	@Operation(summary = "Consulta uma tarefa específica",
+			responses = {
+				@ApiResponse(description = "Sucesso na operação",responseCode = "200",content = @Content(mediaType = "application/json",schema = @Schema(implementation = TarefaDTO.class))),
+				@ApiResponse(description = "Ocorreu um erro na operação",responseCode = "400",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class)))
+			}
+	)
 	@GetMapping("/{id}")
 	public ResponseEntity<?> listarEspecifico(@PathVariable(name = "id") long idTarefa){
 		Tarefa tarefa = tarefaService.buscarPorId(idTarefa);
@@ -81,6 +109,13 @@ public class TarefasResource {
 			return ResponseEntity.ok(new MensagemDTO("Não há dados para serem mostrados!"));
 		}
 	}
+	
+	@Operation(summary = "Exclui uma tarefa específica",
+			responses = {
+				@ApiResponse(description = "Sucesso na operação",responseCode = "200",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class))),
+				@ApiResponse(description = "Ocorreu um erro na operação",responseCode = "400",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class)))
+			}
+	)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletarTarefa(@PathVariable(name = "id")long idTarefa){
 		List<MensagemDTO> mensagens = new ArrayList<>();
@@ -98,6 +133,13 @@ public class TarefasResource {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mensagens);
 		}
 	}
+	
+	@Operation(summary = "Altera uma tarefa específica",
+			responses = {
+				@ApiResponse(description = "Sucesso na operação",responseCode = "200",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class))),
+				@ApiResponse(description = "Ocorreu um erro na operação",responseCode = "400",content = @Content(mediaType = "application/json",schema = @Schema(implementation = MensagemDTO.class)))
+			}
+	)
 	@PutMapping("/{id}")
 	public ResponseEntity<?> alterarTarefa(@PathVariable(name = "id") long idTarefa,
 											@Valid @RequestBody TarefaDTO tarefaNova,BindingResult result){
